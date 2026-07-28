@@ -1,25 +1,66 @@
-import React, { createContext, useContext, useState } from "react";
-import { User, AuthContextType } from "../types/auth";
+import React, { useState } from "react";
+import type { User } from "../types/auth";
 import { UserRole } from "../types/roles";
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from "./AuthContextRef";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const hasPermission = (permission: string): boolean => {
     if (!user) return false;
-    // Implement permission checking logic
-    return true;
+    if (user.role === UserRole.ADMIN) return true;
+    if (user.role === UserRole.READER) {
+      return ["read_meters", "submit_readings"].includes(permission);
+    }
+    return false;
   };
 
   const login = async (email: string, password: string) => {
-    // Implement login logic
+    setLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      const demoUsers: Record<string, Omit<User, "createdAt" | "updatedAt"> & { password: string }> = {
+        "admin@waterbilling.com": {
+          id: "admin-1",
+          name: "Admin User",
+          email: "admin@waterbilling.com",
+          role: UserRole.ADMIN,
+          password: "admin123",
+        },
+        "reader@waterbilling.com": {
+          id: "reader-1",
+          name: "Meter Reader",
+          email: "reader@waterbilling.com",
+          role: UserRole.READER,
+          password: "reader123",
+        },
+      };
+
+      const foundUser = demoUsers[email.toLowerCase().trim()];
+      if (!foundUser || foundUser.password !== password) {
+        throw new Error("Invalid email or password");
+      }
+
+      setUser({
+        id: foundUser.id,
+        name: foundUser.name,
+        email: foundUser.email,
+        role: foundUser.role,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = async () => {
-    // Implement logout logic
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    setUser(null);
+    setLoading(false);
   };
 
   return (
@@ -38,10 +79,3 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};

@@ -206,20 +206,16 @@ const LoginForm: React.FC<LoginFormProps> = ({
       {/* Info Box */}
       <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
         <p className="text-xs font-semibold text-blue-900 mb-3 flex items-center gap-2">
-          <span>ℹ️</span> Demo Account
+          <span>ℹ️</span> Demo Accounts
         </p>
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-blue-800">Email:</span>
-            <code className="text-xs bg-blue-100 px-2 py-1 rounded text-blue-900 font-mono">
-              demo@waterbilling.com
-            </code>
+        <div className="space-y-3 text-sm text-slate-700">
+          <div className="grid grid-cols-[1fr_auto] gap-2 items-center rounded-3xl bg-white p-3 border border-slate-200">
+            <span className="font-medium">Reader</span>
+            <span className="font-mono text-slate-700">reader@waterbilling.com / reader123</span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-blue-800">Password:</span>
-            <code className="text-xs bg-blue-100 px-2 py-1 rounded text-blue-900 font-mono">
-              password123
-            </code>
+          <div className="grid grid-cols-[1fr_auto] gap-2 items-center rounded-3xl bg-white p-3 border border-slate-200">
+            <span className="font-medium">Admin</span>
+            <span className="font-mono text-slate-700">admin@waterbilling.com / admin123</span>
           </div>
         </div>
       </div>

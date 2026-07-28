@@ -1,10 +1,12 @@
-// Role enumeration for the application
-export enum UserRole {
-  ADMIN = "admin",
-  CASHIER = "cashier",
-  READER = "reader",
-  CONSUMER = "consumer",
-}
+// Role values and types for the application
+export const UserRole = {
+  ADMIN: "admin",
+  CASHIER: "cashier",
+  READER: "reader",
+  CONSUMER: "consumer",
+} as const;
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
 // Role-based permissions mapping
 export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {

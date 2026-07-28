@@ -66,7 +66,7 @@ const UserManagement: React.FC = () => {
         Math.floor(Math.random() * 4)
       ],
       phone: `+1-${Math.floor(Math.random() * 9000) + 1000}-${Math.floor(Math.random() * 9000) + 1000}-${Math.floor(Math.random() * 9000) + 1000}`,
-      status: Math.random() > 0.2 ? "active" : "inactive",
+      status: (Math.random() > 0.2 ? "active" : "inactive") as User["status"],
       createdAt: `2024-${String(Math.floor(Math.random() * 12) + 1).padStart(2, "0")}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, "0")}`,
     })),
   ]);

@@ -1,8 +1,16 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./features/admin/pages/AdminDashboard";
 import UserManagement from "./features/admin/pages/UserManagement";
-
+import BillingManagement from "./features/admin/pages/BillingManagement";
+import PaymentsPage from "./features/admin/pages/Payments";
+import ReportsPage from "./features/admin/pages/ReportsPage";
+import ReaderDashboard from "./features/reader/pages/ReaderDashboard";
+import ReaderReading from "./features/reader/pages/ReaderReading";
+import ReaderProfile from "./features/reader/pages/ReaderProfile";
+import { ProtectedRoute } from "./middleware/auth/ProtectedRoute";
+import { UserRole } from "./types/roles";
+ 
 function App() {
   return (
     <BrowserRouter>
@@ -12,14 +20,76 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         {/* Admin routes */}
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/users" element={<UserManagement />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute requiredRole={UserRole.ADMIN}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute requiredRole={UserRole.ADMIN}>
+              <UserManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/billing"
+          element={
+            <ProtectedRoute requiredRole={UserRole.ADMIN}>
+              <BillingManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/payments"
+          element={
+            <ProtectedRoute requiredRole={UserRole.ADMIN}>
+              <PaymentsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/reports"
+          element={
+            <ProtectedRoute requiredRole={UserRole.ADMIN}>
+              <ReportsPage />
+            </ProtectedRoute>
+          }
+        />
+  
+        {/* Reader routes */}
+        <Route
+          path="/reader/dashboard"
+          element={
+            <ProtectedRoute requiredRole={UserRole.READER}>
+              <ReaderDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reader/readings"
+          element={
+            <ProtectedRoute requiredRole={UserRole.READER}>
+              <ReaderReading />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reader/profile"
+          element={
+            <ProtectedRoute requiredRole={UserRole.READER}>
+              <ReaderProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/reader" element={<Navigate to="/reader/dashboard" replace />} />
 
         {/* Cashier routes will go here */}
         {/* <Route path="/cashier/*" element={<CashierLayout />} /> */}
-
-        {/* Reader routes will go here */}
-        {/* <Route path="/reader/*" element={<ReaderLayout />} /> */}
 
         {/* Consumer routes will go here */}
         {/* <Route path="/consumer/*" element={<ConsumerLayout />} /> */}

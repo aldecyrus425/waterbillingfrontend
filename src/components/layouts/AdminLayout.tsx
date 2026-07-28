@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ interface MenuItem {
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onLogout }) => {
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
 
@@ -57,18 +59,22 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onLogout }) => {
         {/* Menu Items */}
         <nav className="mt-8 space-y-2 px-4">
           {menuItems.map((item) => (
-            <a
+            <NavLink
               key={item.path}
-              href={item.path}
-              className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors group"
+              to={item.path}
+              className={({ isActive }) =>
+                `flex items-center gap-4 px-4 py-3 rounded-lg transition-colors group ${
+                  isActive ? "bg-slate-700 text-blue-200" : "hover:bg-slate-700 text-slate-100"
+                }`
+              }
             >
               <span className="text-2xl">{item.icon}</span>
               {sidebarOpen && (
-                <span className="text-sm font-medium group-hover:text-blue-400 transition-colors">
+                <span className="text-sm font-medium transition-colors">
                   {item.label}
                 </span>
               )}
-            </a>
+            </NavLink>
           ))}
         </nav>
 
@@ -97,9 +103,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onLogout }) => {
               ☰
             </button>
 
-            {/* Center - Page title (optional) */}
+            {/* Center - Page title */}
             <div className="flex-1 hidden md:block">
-              <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {menuItems.find((item) => item.path === location.pathname)?.label || "Dashboard"}
+              </h2>
             </div>
 
             {/* Right side - Profile & Logout */}
