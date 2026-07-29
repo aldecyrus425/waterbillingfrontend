@@ -15,11 +15,17 @@ const LoginPage: React.FC = () => {
 
     try {
       await login(email, password);
-      if (email.toLowerCase().trim() === "reader@waterbilling.com") {
+      const e = email.toLowerCase().trim();
+      if (e === "reader@waterbilling.com") {
         navigate("/reader/dashboard");
-      } else if (email.toLowerCase().trim() === "admin@waterbilling.com") {
+      } else if (e === "admin@waterbilling.com") {
         navigate("/admin/dashboard");
+      } else if (e === "cashier@waterbilling.com") {
+        navigate("/cashier/dashboard");
+      } else if (e === "consumer@waterbilling.com") {
+        navigate("/consumer/dashboard");
       } else {
+        // Fallback to reader dashboard for unknown demo accounts
         navigate("/reader/dashboard");
       }
     } catch (err) {

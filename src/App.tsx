@@ -8,9 +8,17 @@ import ReportsPage from "./features/admin/pages/ReportsPage";
 import ReaderDashboard from "./features/reader/pages/ReaderDashboard";
 import ReaderReading from "./features/reader/pages/ReaderReading";
 import ReaderProfile from "./features/reader/pages/ReaderProfile";
+import CashierDashboard from "./features/cashier/pages/CashierDashboard";
+import Cashiering from "./features/cashier/pages/Cashiering";
+import ConsumerDashboard from "./features/consumer/pages/ConsumerDashboard";
+import OnlinePayments from "./features/cashier/pages/OnlinePayments";
+import Consumers from "./features/cashier/pages/Consumers";
+import ConsumerHistory from "./features/consumer/pages/ConsumerHistory";
+import ConsumerPending from "./features/consumer/pages/ConsumerPending";
+import PaymentForm from "./features/consumer/pages/PaymentForm";
 import { ProtectedRoute } from "./middleware/auth/ProtectedRoute";
 import { UserRole } from "./types/roles";
- 
+  
 function App() {
   return (
     <BrowserRouter>
@@ -88,11 +96,75 @@ function App() {
         />
         <Route path="/reader" element={<Navigate to="/reader/dashboard" replace />} />
 
-        {/* Cashier routes will go here */}
-        {/* <Route path="/cashier/*" element={<CashierLayout />} /> */}
+        {/* Cashier routes */}
+        <Route
+          path="/cashier/dashboard"
+          element={
+            <ProtectedRoute requiredRole={UserRole.CASHIER}>
+              <CashierDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cashier/cashiering"
+          element={
+            <ProtectedRoute requiredRole={UserRole.CASHIER}>
+              <Cashiering />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cashier/online"
+          element={
+            <ProtectedRoute requiredRole={UserRole.CASHIER}>
+              <OnlinePayments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cashier/consumers"
+          element={
+            <ProtectedRoute requiredRole={UserRole.CASHIER}>
+              <Consumers />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/cashier" element={<Navigate to="/cashier/dashboard" replace />} />
 
-        {/* Consumer routes will go here */}
-        {/* <Route path="/consumer/*" element={<ConsumerLayout />} /> */}
+        {/* Consumer routes */}
+        <Route
+          path="/consumer/dashboard"
+          element={
+            <ProtectedRoute requiredRole={UserRole.CONSUMER}>
+              <ConsumerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/consumer/history"
+          element={
+            <ProtectedRoute requiredRole={UserRole.CONSUMER}>
+              <ConsumerHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/consumer/pending"
+          element={
+            <ProtectedRoute requiredRole={UserRole.CONSUMER}>
+              <ConsumerPending />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/consumer/pay"
+          element={
+            <ProtectedRoute requiredRole={UserRole.CONSUMER}>
+              <PaymentForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/consumer" element={<Navigate to="/consumer/dashboard" replace />} />
 
         {/* 404 Not Found */}
         <Route path="*" element={<NotFoundPage />} />
