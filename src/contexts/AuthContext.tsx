@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { User } from "../types/auth";
 import { UserRole } from "../types/roles";
 import { AuthContext } from "./AuthContextRef";
+import { loginRequest } from "../api/authApi";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
@@ -32,54 +33,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const response = await loginRequest({
+        email,
+        password,
+      });
 
-      const demoUsers: Record<string, Omit<User, "createdAt" | "updatedAt"> & { password: string }> = {
-        "admin@waterbilling.com": {
-          id: "admin-1",
-          name: "Admin User",
-          email: "admin@waterbilling.com",
-          role: UserRole.ADMIN,
-          password: "admin123",
-        },
-        "reader@waterbilling.com": {
-          id: "reader-1",
-          name: "Meter Reader",
-          email: "reader@waterbilling.com",
-          role: UserRole.READER,
-          password: "reader123",
-        },
-        "cashier@waterbilling.com": {
-          id: "cashier-1",
-          name: "Frontline Cashier",
-          email: "cashier@waterbilling.com",
-          role: UserRole.CASHIER,
-          password: "cashier123",
-        },
-        "consumer@waterbilling.com": {
-          id: "consumer-1",
-          name: "Sample Consumer",
-          email: "consumer@waterbilling.com",
-          role: UserRole.CONSUMER,
-          password: "consumer123",
-        },
-      };
-
-      const foundUser = demoUsers[email.toLowerCase().trim()];
-      if (!foundUser || foundUser.password !== password) {
-        throw new Error("Invalid email or password");
+      if (!response.status) {
+        throw new Error(response.messsage);
       }
 
+      localStorage.setItem("accessToken", response.accessToken);
+
+      localStorage.setItem("refreshToken", response.refreshToken);
+
       const newUser = {
-        id: foundUser.id,
-        name: foundUser.name,
-        email: foundUser.email,
-        role: foundUser.role,
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email,
+        role: response.user.role as UserRole,
         createdAt: new Date(),
         updatedAt: new Date(),
       } as User;
+
       setUser(newUser);
-      // persist to localStorage so reloads keep the session
+      
       try {
         localStorage.setItem("authUser", JSON.stringify({
           ...newUser,
@@ -89,6 +66,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (err) {
         // ignore storage errors
       }
+
+      return newUser;
+
     } finally {
       setLoading(false);
     }

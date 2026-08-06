@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/useAuth";
 import LoginForm from "../components/forms/LoginForm";
+import { UserRole } from "../types/roles";
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
@@ -14,20 +15,44 @@ const LoginPage: React.FC = () => {
     setError("");
 
     try {
-      await login(email, password);
-      const e = email.toLowerCase().trim();
-      if (e === "reader@waterbilling.com") {
-        navigate("/reader/dashboard");
-      } else if (e === "admin@waterbilling.com") {
-        navigate("/admin/dashboard");
-      } else if (e === "cashier@waterbilling.com") {
-        navigate("/cashier/dashboard");
-      } else if (e === "consumer@waterbilling.com") {
-        navigate("/consumer/dashboard");
-      } else {
-        // Fallback to reader dashboard for unknown demo accounts
-        navigate("/reader/dashboard");
+      const user = await login(email, password);
+      switch (user.role)
+      {
+        case UserRole.ADMIN:
+          navigate("/admin/dashboard");
+          break;
+
+        case UserRole.CASHIER:
+          navigate("/cashier/dashboard");
+          break;
+          
+        case UserRole.READER:
+          navigate("/reader/dashboard");
+          break;
+        
+        case UserRole.CONSUMER:
+          navigate("/consumer/dashboard");
+          break;
+
+        default:
+          navigate("/");
       }
+
+      // const e = email.toLowerCase().trim();
+      // if (e === "reader@waterbilling.com") {
+      //   navigate("/reader/dashboard");
+      // } else if (e === "admin@waterbilling.com") {
+      //   navigate("/admin/dashboard");
+      // } else if (e === "cashier@waterbilling.com") {
+      //   navigate("/cashier/dashboard");
+      // } else if (e === "consumer@waterbilling.com") {
+      //   navigate("/consumer/dashboard");
+      // } else {
+      //   // Fallback to reader dashboard for unknown demo accounts
+      //   navigate("/reader/dashboard");
+      // }
+
+      
     } catch (err) {
       setError("Invalid email or password. Please try again.");
       console.error(err);
